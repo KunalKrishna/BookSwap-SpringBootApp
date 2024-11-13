@@ -12,7 +12,7 @@
 	<artifactId>BookSwap</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>BookSwap</name>
-	<description>Project for COMP 421 course on Database Fall 2024</description>
+	<description>Project for COMP 421,a course on Database, Fall 2024</description>
 	<url/>
 	<licenses>
 		<license/>
@@ -41,6 +41,24 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+<!--		//TODO https://ramakrishna-01.medium.com/registration-and-login-authentication-with-database-using-springboot-a47e3782658d-->
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+<!--		DevTools intends to try and improve the development time while working with the Spring Boot application. -->
+<!--		Spring Boot DevTools pick up the changes and restart the application.-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+			<scope>runtime</scope>
+			<optional>true</optional>
 		</dependency>
 
 		<dependency>
