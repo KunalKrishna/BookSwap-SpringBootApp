@@ -8,13 +8,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @SpringBootApplication
-//@RestController
+@RestController
 public class BookSwapApplication {
 
-//	@GetMapping("/")
-//	public String welcome(){
-//		return "hello!";
-//	}
+	@GetMapping("/")
+	public String welcome(){
+		return "hello!";
+	}
 
 	public static void main(String[] args) {
 		SpringApplication.run(BookSwapApplication.class, args);
