@@ -10,7 +10,9 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -36,5 +38,31 @@ public class BookServiceImpl implements BookService {
                 .orElseThrow(()->
                         new ResourceNotFoundException("book doesn't exist with given id : "+ bid));
         return BookMapper.mapToBookDto(book);
+    }
+
+    @Override
+    public List<BookDto> getAllBooks() {
+        List<Book> books = bookRepository.findAll();
+        return books
+                .stream()
+                .map(BookMapper::mapToBookDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public BookDto updateBook(Long bid, BookDto updatedBook) {
+        Book book = bookRepository.findById(bid)
+                .orElseThrow(() -> new RuntimeException("Book does not exist for bid : " + bid));
+
+        book.setBookTitle(updatedBook.getBookTitle());
+        book.setBookAuthor(updatedBook.getBookAuthor());
+        book.setBookGenre(updatedBook.getBookGenre());
+        book.setBookISBN(updatedBook.getBookISBN());
+        book.setBookEdition(updatedBook.getBookEdition());
+        book.setPublicationYear(updatedBook.getPublicationYear());
+
+        Book savedBook = bookRepository.save(book);
+
+        return BookMapper.mapToBookDto(savedBook);
     }
 }
