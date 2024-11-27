@@ -10,5 +10,5 @@ public interface BookService {
     List<BookDto> getAllBooks();
 
     BookDto updateBook(Long bid, BookDto updatedBook);
-//    BookDto deleteBook(Long bid);
+    void deleteBook(Long bid);
 }

@@ -59,7 +59,9 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-thymeleaf</artifactId>
 		</dependency>
+
 <!--		//TODO https://ramakrishna-01.medium.com/registration-and-login-authentication-with-database-using-springboot-a47e3782658d-->
+<!--		https://spring.io/guides/gs/securing-web -->
 <!--		<dependency>-->
 <!--			<groupId>org.springframework.boot</groupId>-->
 <!--			<artifactId>spring-boot-starter-security</artifactId>-->

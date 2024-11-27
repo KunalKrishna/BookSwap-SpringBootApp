@@ -7,11 +7,9 @@ import edu.unc.cs.BookSwap.mapper.BookMapper;
 import edu.unc.cs.BookSwap.repository.BookRepository;
 import edu.unc.cs.BookSwap.service.BookService;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -64,5 +62,12 @@ public class BookServiceImpl implements BookService {
         Book savedBook = bookRepository.save(book);
 
         return BookMapper.mapToBookDto(savedBook);
+    }
+
+    @Override
+    public void deleteBook(Long bid) {
+        Book candidateBook = bookRepository.findById(bid)
+                .orElseThrow(() -> new ResourceNotFoundException("No book found for bid : " + bid));
+        bookRepository.delete(candidateBook);
     }
 }

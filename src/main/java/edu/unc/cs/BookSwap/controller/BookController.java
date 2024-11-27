@@ -27,7 +27,7 @@ public class BookController {
         return  new ResponseEntity<>(savedBookDto, HttpStatus.CREATED);
     }
 
-    // REST API for Retrieving a book : http://localhost:8080/api/books/1
+    // REST API for Retrieving a book : http://localhost:8080/api/books/3
     // PS : @PathVariable not @PathParam
     @GetMapping("{bid}")
     public ResponseEntity<BookDto> getBookById(@PathVariable("bid") Long bid) {
@@ -47,12 +47,18 @@ public class BookController {
 //        return ResponseEntity.ok(allBooks);
     }
 
-    // REST API for Updating a book : http://localhost:8080/api/books/1
+    // REST API for Updating a book : http://localhost:8080/api/books/7
     @PutMapping("{bid}")
     public ResponseEntity<BookDto> updateBook(@PathVariable Long bid,
                                               @RequestBody BookDto updatedBook) {
         BookDto bookDto = bookService.updateBook(bid, updatedBook);
         return new ResponseEntity<>(bookDto, HttpStatus.ACCEPTED);
 //        return ResponseEntity.ok(bookDto);
+    }
+
+    @DeleteMapping("{bid}")
+    public ResponseEntity<String> deleteBook(@PathVariable Long bid) {
+        bookService.deleteBook(bid);
+        return ResponseEntity.ok("Book with bid "+ bid+ " deleted successfully!!!");
     }
 }
