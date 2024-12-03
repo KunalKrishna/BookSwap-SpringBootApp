@@ -11,11 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class BookSwapApplication {
 
-//	@GetMapping("/")
-//	public String welcome(){
-//		return "hello!";
-//	}
-
 	public static void main(String[] args) {
 		SpringApplication.run(BookSwapApplication.class, args);
 	}
