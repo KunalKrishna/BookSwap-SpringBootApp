@@ -28,14 +28,16 @@ public class SpringSecurity {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf().ignoringRequestMatchers("/register/**").disable()  // Enable CSRF protection globally but ignoring specific routes
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/register/**", "/index", "/home", "/login").permitAll()
+                        .requestMatchers("/register/**", "/index", "/home", "/login", "/", "/404").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/user/**").hasRole("USER")
+                        .requestMatchers("/users").hasRole("ADMIN")// Allow USER role for all /user endpoints
+                        .requestMatchers("/user/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
-                        .defaultSuccessUrl("/users")
+                        .loginProcessingUrl("/login")
+                        .defaultSuccessUrl("/user/dashboard", true) // Redirect to user dashboard
                         .failureUrl("/login?error")
                         .permitAll()
                 )

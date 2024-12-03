@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import java.security.Principal;
 import java.util.List;
 
 @Controller
@@ -66,9 +67,23 @@ public class AuthController {
         return "users";
     }
 
+    @GetMapping("/user/dashboard")
+    public String userDashboard(Model model, Principal principal) {
+        String email = principal.getName(); // Get the logged-in user's email
+        model.addAttribute("email", email); // Pass email to the view
+        return "user_dashboard";
+    }
+
+
     // handler method to handle login request
     @GetMapping("/login")
     public String login(){
         return "login";
+    }
+
+    // handler method to handle login request
+    @GetMapping("/error")
+    public String error(){
+        return "404";
     }
 }
