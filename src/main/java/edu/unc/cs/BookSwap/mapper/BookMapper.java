@@ -8,22 +8,24 @@ public class BookMapper {
         return new BookDto(
                 book.getBid(),
                 book.getBookTitle(),
-                book.getBookAuthor(),
-                book.getBookGenre(),
-                book.getBookISBN(),
-                book.getPublicationYear(),
-                book.getBookEdition()
+                book.getBookAuthor()
+//                ,
+//                book.getBookGenre(),
+//                book.getBookISBN(),
+//                book.getPublicationYear(),
+//                book.getBookEdition()
         );
     }
     public static Book mapToBook(BookDto bookDto) {
         return new Book(
                 bookDto.getBid(),
                 bookDto.getBookTitle(),
-                bookDto.getBookAuthor(),
-                bookDto.getBookGenre(),
-                bookDto.getBookISBN(),
-                bookDto.getPublicationYear(),
-                bookDto.getBookEdition()
+                bookDto.getBookAuthor()
+//                ,
+//                bookDto.getBookGenre(),
+//                bookDto.getBookISBN(),
+//                bookDto.getPublicationYear(),
+//                bookDto.getBookEdition()
         );
     }
 }

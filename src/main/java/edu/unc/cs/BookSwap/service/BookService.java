@@ -11,4 +11,6 @@ public interface BookService {
 
     BookDto updateBook(Long bid, BookDto updatedBook);
     void deleteBook(Long bid);
+
+    BookDto getBookByTitle(String bookTitle);
 }

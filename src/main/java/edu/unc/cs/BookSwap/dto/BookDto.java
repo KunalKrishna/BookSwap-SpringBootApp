@@ -14,8 +14,8 @@ public class BookDto {
     private Long bid;
     private String bookTitle;
     private String bookAuthor;
-    private String bookGenre;
-    private String bookISBN;
-    private String publicationYear;
-    private String bookEdition;
+//    private String bookGenre;
+//    private String bookISBN;
+//    private String publicationYear;
+//    private String bookEdition;
 }

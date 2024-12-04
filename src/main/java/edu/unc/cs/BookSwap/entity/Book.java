@@ -23,15 +23,15 @@ public class Book {
     @Column( name="author")
     private String bookAuthor;
 
-    @Column (name = "genre")
-    private String bookGenre;
-
-    @Column (name = "isbn")
-    private String bookISBN;
-
-    @Column (name = "year_of_publication")
-    private String publicationYear;
-
-    @Column (name = "edition")
-    private String bookEdition;
+//    @Column (name = "genre")
+//    private String bookGenre;
+//
+//    @Column (name = "isbn")
+//    private String bookISBN;
+//
+//    @Column (name = "year_of_publication")
+//    private String publicationYear;
+//
+//    @Column (name = "edition")
+//    private String bookEdition;
 }

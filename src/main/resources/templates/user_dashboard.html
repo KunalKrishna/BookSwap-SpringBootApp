@@ -32,6 +32,13 @@
 <div class="container">
     <h2>Welcome, <span th:text="${email}"></span>!</h2>
     <p>This is your user dashboard.</p>
+
+    <ul>
+        <li><a th:href="@{/user/book/add}">Add a book</a></li>
+        <li><a th:href="@{/user/book/find}">Find a book</a></li>
+        <li><a th:href="@{/user/book/offered}">See the books you are offering</a></li>
+        <li><a th:href="@{/user/profile/edit}">Edit your profile</a></li>
+    </ul>
 </div>
 </body>
 </html>

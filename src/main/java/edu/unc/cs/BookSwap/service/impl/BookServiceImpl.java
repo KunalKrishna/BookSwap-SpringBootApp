@@ -54,10 +54,10 @@ public class BookServiceImpl implements BookService {
 
         book.setBookTitle(updatedBook.getBookTitle());
         book.setBookAuthor(updatedBook.getBookAuthor());
-        book.setBookGenre(updatedBook.getBookGenre());
-        book.setBookISBN(updatedBook.getBookISBN());
-        book.setBookEdition(updatedBook.getBookEdition());
-        book.setPublicationYear(updatedBook.getPublicationYear());
+//        book.setBookGenre(updatedBook.getBookGenre());
+//        book.setBookISBN(updatedBook.getBookISBN());
+//        book.setBookEdition(updatedBook.getBookEdition());
+//        book.setPublicationYear(updatedBook.getPublicationYear());
 
         Book savedBook = bookRepository.save(book);
 
@@ -69,5 +69,15 @@ public class BookServiceImpl implements BookService {
         Book candidateBook = bookRepository.findById(bid)
                 .orElseThrow(() -> new ResourceNotFoundException("No book found for bid : " + bid));
         bookRepository.delete(candidateBook);
+    }
+
+
+    @Override
+    public BookDto getBookByTitle(String bookTitle) {
+        Book book = bookRepository.findByBookTitle(bookTitle);
+        if (book == null) {
+            throw new ResourceNotFoundException("Book not found with title: " + bookTitle);
+        }
+        return BookMapper.mapToBookDto(book);
     }
 }

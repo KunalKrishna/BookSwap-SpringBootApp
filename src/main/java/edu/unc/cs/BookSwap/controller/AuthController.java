@@ -1,9 +1,13 @@
 package edu.unc.cs.BookSwap.controller;
 
+import edu.unc.cs.BookSwap.dto.BookDto;
 import edu.unc.cs.BookSwap.dto.UserDto;
 import edu.unc.cs.BookSwap.entity.User;
+import edu.unc.cs.BookSwap.exceptions.ResourceNotFoundException;
 import edu.unc.cs.BookSwap.service.AppUserService;
+import edu.unc.cs.BookSwap.service.BookService;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -18,6 +22,8 @@ import java.util.List;
 public class AuthController {
 
     private AppUserService appUserService;
+    @Autowired
+    private BookService bookService;
 
     public AuthController(AppUserService appUserService) {
         this.appUserService = appUserService;
@@ -85,5 +91,42 @@ public class AuthController {
     @GetMapping("/error")
     public String error(){
         return "404";
+    }
+
+    // preparing the VIEW for case when user want to add a book
+    @GetMapping("/user/book/add")
+    public String userAddBook(Model model, Principal principal) {
+        BookDto book = new BookDto();
+        model.addAttribute("book", book);
+        return "book_add";
+    }
+
+    // handler method to hand add a book request
+    @PostMapping("/user/book/save")
+    public String userSaveBook(@Valid @ModelAttribute("book") BookDto bookDto,
+                               BindingResult result,
+                               Model model) {
+        BookDto existingBook = null;
+        try {
+            existingBook = bookService.getBookByTitle(bookDto.getBookTitle());
+        } catch (ResourceNotFoundException e) {
+            bookService.createBook(bookDto);
+//            return "redirect:/user/dashboard?success";
+            return "redirect:/user/book/add?success";
+        }
+
+        if(existingBook != null && existingBook.getBookTitle() != null && !existingBook.getBookTitle().isEmpty()){
+            result.rejectValue("bookTitle", "Duplicate Entry",
+                    "There is already a book added with the same Title");
+        }
+
+        if(result.hasErrors()){
+            model.addAttribute("book", bookDto);
+            return "/book_add";
+        }
+
+        bookService.createBook(bookDto);
+//        return "redirect:/user/dashboard?success";
+        return "redirect:/user/book/add?success";
     }
 }
