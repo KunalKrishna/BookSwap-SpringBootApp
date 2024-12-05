@@ -4,7 +4,6 @@ import edu.unc.cs.BookSwap.dto.BookDto;
 import edu.unc.cs.BookSwap.dto.BookSearchResultDto;
 import edu.unc.cs.BookSwap.dto.SearchBookDto;
 import edu.unc.cs.BookSwap.entity.Book;
-import edu.unc.cs.BookSwap.service.AppUserService;
 import edu.unc.cs.BookSwap.service.BookService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +14,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
 import java.util.List;
@@ -27,7 +28,7 @@ public class UserBookController {
 
     // preparing the VIEW for case when user want to add a book
     @GetMapping("/user/book/add")
-    public String userAddBook(Model model, Principal principal) {
+    public String showAddBookForm(Model model, Principal principal) {
         BookDto book = new BookDto();
         model.addAttribute("book", book);
         return "book_add";
@@ -35,10 +36,10 @@ public class UserBookController {
 
     // handler method to hand add a book request
     @PostMapping("/user/book/save")
-    public String userSaveBook(@Valid @ModelAttribute("book") BookDto bookDto,
-                               Authentication authentication,
-                               BindingResult result,
-                               Model model) {
+    public String addBook(@Valid @ModelAttribute("book") BookDto bookDto,
+                          Authentication authentication,
+                          BindingResult result,
+                          Model model) {
         String email = authentication.getName();
         try {
             bookService.addBookByUser(bookDto, email);
@@ -74,4 +75,20 @@ public class UserBookController {
         model.addAttribute("resultCount", results.size());
         return "search_book_result";
     }
+
+    @PostMapping("/user/book/delete")
+    public String deleteBook(
+            @RequestParam Long bookId,
+            Authentication authentication,
+            RedirectAttributes redirectAttributes) {
+        String email = authentication.getName();
+        boolean deleted = bookService.deleteBookForUser(bookId, email);
+        if (deleted) {
+            redirectAttributes.addFlashAttribute("successMessage", "Book deleted successfully!");
+        } else {
+            redirectAttributes.addFlashAttribute("errorMessage", "Failed to delete the book.");
+        }
+        return "redirect:/user/book/offered";
+    }
+
 }

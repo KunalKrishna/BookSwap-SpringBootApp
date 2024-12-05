@@ -15,4 +15,6 @@ public interface UserBookRepository extends JpaRepository<UserBook, Long> {
 
     boolean existsByUserAndBook(User user, Book book);
 
+    UserBook findByBookBidAndUserEmail(Long bookId, String email);
+    long countByBookBid(Long bookId);
 }

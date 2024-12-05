@@ -1,24 +1,17 @@
 package edu.unc.cs.BookSwap.controller;
 
-import edu.unc.cs.BookSwap.dto.BookDto;
-import edu.unc.cs.BookSwap.dto.BookSearchResultDto;
-import edu.unc.cs.BookSwap.dto.SearchBookDto;
 import edu.unc.cs.BookSwap.dto.UserDto;
-import edu.unc.cs.BookSwap.entity.Book;
 import edu.unc.cs.BookSwap.entity.User;
-import edu.unc.cs.BookSwap.exceptions.ResourceNotFoundException;
 import edu.unc.cs.BookSwap.service.AppUserService;
 import edu.unc.cs.BookSwap.service.BookService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.security.Principal;
 import java.util.List;

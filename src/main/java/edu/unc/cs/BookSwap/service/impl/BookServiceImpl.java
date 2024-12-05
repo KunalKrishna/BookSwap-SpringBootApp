@@ -14,8 +14,10 @@ import edu.unc.cs.BookSwap.repository.UserRepository;
 import edu.unc.cs.BookSwap.service.BookService;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -118,11 +120,20 @@ public class BookServiceImpl implements BookService {
 
         // Create new ownership entry
         UserBook userBook = new UserBook(user, book);
-        userBookRepository.save(userBook);
+        try {
+            // TRIGGER
+            userBookRepository.save(userBook);
+        } catch (DataIntegrityViolationException e) {
+            if (e.getCause() instanceof SQLException &&
+                    e.getCause().getMessage().contains("User cannot own more than 7 books")) {
+                throw new IllegalArgumentException("You cannot own more than 7 books.");
+            }
+            throw e;
+        }
 
         return BookMapper.mapToBookDto(book);
     }
-;
+
     @Override
     public List<Book> findBooksByUserEmail(String email) {
         List<Book> books =  bookRepository.findBooksByUserEmail(email);
@@ -152,4 +163,20 @@ public class BookServiceImpl implements BookService {
     public List<BookSearchResultDto> searchBooksByTitle(String bookTitle) {
         return bookRepository.findBooksByTitleWithOwners(bookTitle);
     }
+
+    @Override
+    @Transactional
+    public boolean deleteBookForUser(Long bookId, String email) {
+        UserBook userBook = userBookRepository.findByBookBidAndUserEmail(bookId, email);
+        if (userBook != null) {
+            userBookRepository.delete(userBook);
+            // Only delete the book if no other user owns it
+            if (userBookRepository.countByBookBid(bookId) == 0) {
+                bookRepository.deleteById(bookId);
+            }
+            return true;
+        }
+        return false;
+    }
+
 }

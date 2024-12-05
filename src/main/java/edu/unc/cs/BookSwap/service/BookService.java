@@ -3,6 +3,7 @@ package edu.unc.cs.BookSwap.service;
 import edu.unc.cs.BookSwap.dto.BookDto;
 import edu.unc.cs.BookSwap.dto.BookSearchResultDto;
 import edu.unc.cs.BookSwap.entity.Book;
+import edu.unc.cs.BookSwap.entity.UserBook;
 
 import java.util.List;
 
@@ -23,4 +24,6 @@ public interface BookService {
     BookDto getBookByTitleForGivenUser(String bookTitle, String email);
 
     List<BookSearchResultDto> searchBooksByTitle(String bookTitle);
+
+    boolean deleteBookForUser(Long bookId, String email);
 }
