@@ -2,6 +2,7 @@ package edu.unc.cs.BookSwap.service;
 
 import edu.unc.cs.BookSwap.entity.User;
 import edu.unc.cs.BookSwap.entity.Role;
+import edu.unc.cs.BookSwap.exceptions.ResourceNotFoundException;
 import edu.unc.cs.BookSwap.repository.UserRepository;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -23,15 +24,17 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(email);
+    public UserDetails loadUserByUsername(String email)  {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User with email " + email + " not found"));
+
 
         if (user != null) {
             return new org.springframework.security.core.userdetails.User(user.getEmail(),
                     user.getPassword(),
                     mapRolesToAuthorities(user.getRoles()));
         }else{
-            throw new UsernameNotFoundException("Invalid username or password.");
+            throw new UsernameNotFoundException("Wrong password.");
         }
     }
 

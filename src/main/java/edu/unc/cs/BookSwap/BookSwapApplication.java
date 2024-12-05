@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class BookSwapApplication {
 
 	public static void main(String[] args) {
+		System.out.println("BookSwapApplication.main");
 		SpringApplication.run(BookSwapApplication.class, args);
 	}
 

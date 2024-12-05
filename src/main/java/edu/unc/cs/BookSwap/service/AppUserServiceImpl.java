@@ -3,6 +3,7 @@ package edu.unc.cs.BookSwap.service;
 import edu.unc.cs.BookSwap.dto.UserDto;
 import edu.unc.cs.BookSwap.entity.User;
 import edu.unc.cs.BookSwap.entity.Role;
+import edu.unc.cs.BookSwap.exceptions.ResourceNotFoundException;
 import edu.unc.cs.BookSwap.repository.UserRepository;
 import edu.unc.cs.BookSwap.repository.RoleRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,7 +32,7 @@ public class AppUserServiceImpl implements AppUserService {
     @Override
     public void saveUser(UserDto userDto) {
         User user = new User();
-        user.setFirstName(user.getFirstName());
+        user.setFirstName(userDto.getFirstName());
         user.setLastName(userDto.getLastName());
         user.setEmail(userDto.getEmail());
         // encrypt the password using spring security
@@ -46,7 +48,8 @@ public class AppUserServiceImpl implements AppUserService {
 
     @Override
     public User findUserByEmail(String email) {
-        return userRepository.findByEmail(email);
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User with email " + email + " not found"));
     }
 
     @Override

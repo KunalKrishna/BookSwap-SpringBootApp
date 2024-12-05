@@ -2,12 +2,14 @@ package edu.unc.cs.BookSwap.controller;
 
 import edu.unc.cs.BookSwap.dto.BookDto;
 import edu.unc.cs.BookSwap.dto.UserDto;
+import edu.unc.cs.BookSwap.entity.Book;
 import edu.unc.cs.BookSwap.entity.User;
 import edu.unc.cs.BookSwap.exceptions.ResourceNotFoundException;
 import edu.unc.cs.BookSwap.service.AppUserService;
 import edu.unc.cs.BookSwap.service.BookService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -104,20 +106,27 @@ public class AuthController {
     // handler method to hand add a book request
     @PostMapping("/user/book/save")
     public String userSaveBook(@Valid @ModelAttribute("book") BookDto bookDto,
+                               Authentication authentication,
                                BindingResult result,
                                Model model) {
         BookDto existingBook = null;
+        String email = authentication.getName();
         try {
-            existingBook = bookService.getBookByTitle(bookDto.getBookTitle());
+            //first check, if book exists ? If yes, does it exist under this email?
+                //if answer to both question is YES : Raise error : "There is already a book added with the same Title"
+            existingBook = bookService.getBookByTitleForGivenUser(bookDto.getBookTitle(), email);
         } catch (ResourceNotFoundException e) {
-            bookService.createBook(bookDto);
-//            return "redirect:/user/dashboard?success";
+                // if answer to either of two question is NO then add book for this email : GOOD FOR ADDING
+            bookService.addBookByUser(bookDto, email);
             return "redirect:/user/book/add?success";
+
+//            bookService.createBook(bookDto);
+//            return "redirect:/user/dashboard?success";
         }
 
         if(existingBook != null && existingBook.getBookTitle() != null && !existingBook.getBookTitle().isEmpty()){
             result.rejectValue("bookTitle", "Duplicate Entry",
-                    "There is already a book added with the same Title");
+                    "You have already added a book with the same Title");
         }
 
         if(result.hasErrors()){
@@ -125,8 +134,32 @@ public class AuthController {
             return "/book_add";
         }
 
-        bookService.createBook(bookDto);
-//        return "redirect:/user/dashboard?success";
+        bookService.addBookByUser(bookDto, email);
         return "redirect:/user/book/add?success";
     }
+
+    @GetMapping("/user/book/offered")
+    public String listUserBooks(Authentication authentication, Model model) {
+        if (authentication == null) {
+            System.out.println("User is not authenticated");
+            return "redirect:/login";
+        }
+        String email = authentication.getName();
+        List<Book> userBooks = bookService.findBooksByUserEmail("big@123.com");
+        model.addAttribute("books", userBooks);
+        return "books_view";
+    }
+
+    @GetMapping("/user/book/find")
+    public String searchBookForm( Model model ) {
+        String bookTitle = "";
+        model.addAttribute("bookTitle", bookTitle);
+        return "search_book";
+    }
+
+//    @PostMapping("/search")
+//    public String searchBook(@ModelAttribute("bookTitle") String bookTitle) {
+//        // Process the bookTitle here
+//        return "search_book_result";
+//    }
 }

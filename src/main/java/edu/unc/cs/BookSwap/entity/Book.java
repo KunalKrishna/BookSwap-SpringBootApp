@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.GenericGenerator;
 
 @Getter
 @Setter
@@ -23,6 +24,12 @@ public class Book {
     @Column( name="author")
     private String bookAuthor;
 
+    public Book(String bookTitle, String bookAuthor) {
+        this.bookTitle = bookTitle;
+        this.bookAuthor = bookAuthor;
+    }
+}
+
 //    @Column (name = "genre")
 //    private String bookGenre;
 //
@@ -34,4 +41,3 @@ public class Book {
 //
 //    @Column (name = "edition")
 //    private String bookEdition;
-}

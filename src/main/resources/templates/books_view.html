@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>My Books</title>
+</head>
+<body>
+<h1>My Books</h1>
+<table>
+    <thead>
+    <tr>
+        <th>Title</th>
+        <th>Author</th>
+        <th>Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="book : ${books}">
+        <td th:text="${book.bookTitle}"></td>
+        <td th:text="${book.bookAuthor}"></td>
+<!--TODO Make a pair of button to EDIT the book details & DELETE the book -->
+<!--        <td th:text="${book.bookAuthor}">Delete</td>-->
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
