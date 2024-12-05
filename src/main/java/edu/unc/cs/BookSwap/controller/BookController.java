@@ -1,9 +1,7 @@
 package edu.unc.cs.BookSwap.controller;
 
 import edu.unc.cs.BookSwap.dto.BookDto;
-import edu.unc.cs.BookSwap.entity.Book;
 import edu.unc.cs.BookSwap.service.BookService;
-import jakarta.websocket.server.PathParam;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -1,6 +1,5 @@
 package edu.unc.cs.BookSwap.controller;
 
-import edu.unc.cs.BookSwap.dto.UserDto;
 import edu.unc.cs.BookSwap.entity.User;
 import edu.unc.cs.BookSwap.service.AppUserService;
 import org.springframework.beans.factory.annotation.Autowired;
