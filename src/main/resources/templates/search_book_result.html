@@ -9,6 +9,12 @@
         rel="stylesheet"
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
         crossorigin="anonymous">
+  <style>
+    table, th, td {
+      border: 1px solid black;
+      border-collapse: collapse;
+    }
+  </style>
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -47,39 +53,35 @@
   <div class="row col-md-8 offset-md-2">
     <div class="card">
       <div class="card-header">
-        <h2 class="text-center">Search the book</h2>
+        <h2 class="text-center">Search Result(s)</h2>
         <div sec:authentication="name"></div>
       </div>
-      <div th:if="${param.success}" >
-        <div class="alert alert-info ">
-          You have successfully added the book !
-        </div>
       </div>
       <div class="card-body">
-        <form
-                method="post"
-                role="form"
-                th:action="@{/search}"
-                th:object="${searchBookDto}"
-        >
-          <div class="form-group mb-3">
-            <label class="form-label">Book Title</label>
-            <input
-                    class="form-control"
-                    id="bookTitle"
-                    name="bookTitle"
-                    placeholder="Enter the title of the book you are looking for..."
-                    th:field="*{bookTitle}"
-                    type="text"
-            />
-            <p th:errors = "*{bookTitle}" class="text-danger"
-               th:if="${#fields.hasErrors('bookTitle')}"></p>
-          </div>
-          <div class="form-group">
-            <button class="btn btn-primary" type="submit">Find</button>
-            <span> Nah! <a th:href="@{/user/dashboard}">Cancel</a></span>
-          </div>
-        </form>
+        <h1>Search Results</h1>
+        <p  class="text-danger"  th:text="${resultCount} + ' results found!!!'"></p>
+        <table>
+          <thead>
+          <tr>
+            <th>Index</th>
+            <th>Book Title</th>
+            <th>Book Author</th>
+            <th>Owner Email</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr th:each="result, iterStat : ${searchResults}">
+            <td th:text="${iterStat.count}"></td>
+            <td th:text="${result.bookTitle}"></td>
+            <td th:text="${result.bookAuthor}"></td>
+<!--            <td th:text="${result.ownerEmail}"></td>-->
+            <td>
+              <a th:href="@{'mailto:' + ${result.ownerEmail}}" th:text="${result.ownerEmail}"></a>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+        <a th:href="@{/user/book/find}">New Search</a>
       </div>
     </div>
   </div>

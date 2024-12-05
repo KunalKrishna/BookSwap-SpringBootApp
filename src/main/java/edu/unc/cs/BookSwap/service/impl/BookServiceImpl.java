@@ -1,9 +1,11 @@
 package edu.unc.cs.BookSwap.service.impl;
 
 import edu.unc.cs.BookSwap.dto.BookDto;
+import edu.unc.cs.BookSwap.dto.BookSearchResultDto;
 import edu.unc.cs.BookSwap.entity.Book;
 import edu.unc.cs.BookSwap.entity.UserBook;
 import edu.unc.cs.BookSwap.entity.User;
+import edu.unc.cs.BookSwap.exceptions.BookAlreadyOwnedException;
 import edu.unc.cs.BookSwap.exceptions.ResourceNotFoundException;
 import edu.unc.cs.BookSwap.mapper.BookMapper;
 import edu.unc.cs.BookSwap.repository.BookRepository;
@@ -97,20 +99,30 @@ public class BookServiceImpl implements BookService {
     @Override
     @Transactional
     public BookDto addBookByUser(BookDto bookDto, String email) {
-        //TODO : User must exist prior else abort
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with email "+email));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found for email : "+email));
 
-        //TODO handle case : if book already exists - find a mechanism to add entry in UserBook
-        Book book = BookMapper.mapToBook(bookDto);
-        book = bookRepository.save(book);
+        Book book = bookRepository.findByBookTitle(bookDto.getBookTitle())
+                .orElse(null);
 
+        if (book == null) {
+            // Case 1: Book doesn't exist, create new book and ownership
+            book = BookMapper.mapToBook(bookDto);
+            book = bookRepository.save(book);
+        } else {
+            // Case 2: Book exists, check if user already owns it
+            if (userBookRepository.existsByUserAndBook(user, book)) {
+                throw new BookAlreadyOwnedException("You already own this book");
+            }
+        }
+
+        // Create new ownership entry
         UserBook userBook = new UserBook(user, book);
         userBookRepository.save(userBook);
 
         return BookMapper.mapToBookDto(book);
     }
-
+;
     @Override
     public List<Book> findBooksByUserEmail(String email) {
         List<Book> books =  bookRepository.findBooksByUserEmail(email);
@@ -122,7 +134,7 @@ public class BookServiceImpl implements BookService {
     public BookDto getBookByTitleForGivenUser(String bookTitle, String email) {
         // Step 1: Check if the book exists
         Book book = bookRepository.findByBookTitle(bookTitle)
-                .orElseThrow(() -> new ResourceNotFoundException("Book with title " + bookTitle + " not found"));
+                .orElse(null);
 
         // Step 2: Get the user by email
         User user = userRepository.findByEmail(email)
@@ -134,5 +146,10 @@ public class BookServiceImpl implements BookService {
 
         // If we've reached here, the book exists and is owned by the user
         return BookMapper.mapToBookDto(book);
+    }
+
+    @Override
+    public List<BookSearchResultDto> searchBooksByTitle(String bookTitle) {
+        return bookRepository.findBooksByTitleWithOwners(bookTitle);
     }
 }

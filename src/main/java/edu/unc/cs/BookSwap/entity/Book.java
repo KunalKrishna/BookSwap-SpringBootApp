@@ -23,11 +23,6 @@ public class Book {
 
     @Column( name="author")
     private String bookAuthor;
-
-    public Book(String bookTitle, String bookAuthor) {
-        this.bookTitle = bookTitle;
-        this.bookAuthor = bookAuthor;
-    }
 }
 
 //    @Column (name = "genre")
