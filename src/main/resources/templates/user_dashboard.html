@@ -10,6 +10,32 @@
           rel="stylesheet"
           integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
           crossorigin="anonymous">
+    <style>
+        ul {
+          list-style-type: none;
+        }
+        ul li::before {
+          content: '';
+          display: inline-block;
+          height: 15px;
+          width: 15px;
+          background-size: contain;
+          background-repeat: no-repeat;
+          margin-right: 5px;
+          vertical-align: middle;
+        }
+        .b1::before {
+          background-image: url('/images/plus.gif');
+        }
+        .b2::before {
+          background-image: url('/images/search-left.png');
+        }
+        .b3::before {
+          background-image: url('/images/list_clipboard.png');
+        }
+        .b4::before {
+          background-image: url('/images/edit_pencil.png');
+    </style>
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -48,10 +74,11 @@
     <p>This is your user dashboard.</p>
 
     <ul>
-        <li><a th:href="@{/user/book/add}">Add a book</a></li>
-        <li><a th:href="@{/user/book/find}">Search a book</a></li>
-        <li><a th:href="@{/user/book/offered}">See the books you are offering</a></li>
-        <li><a th:href="@{/user/profile/edit}">Edit your profile</a></li>
+        <li class="b1"><a th:href="@{/user/book/add}">Add a book</a></li>
+        <li class="b2"><a th:href="@{/user/book/find}"> Search a book</a></li>
+        <li class="b3"><a th:href="@{/user/book/offered}"> See the books📚 you are offering</a></li>
+        <li class="b4"><a th:href="@{/user/profile/edit}"> Edit your profile </a></li>
+<!--        ➕🔍📚✏️🙎🏻‍♂️♂️-->
     </ul>
 </div>
 </body>

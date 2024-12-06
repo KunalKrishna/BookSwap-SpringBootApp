@@ -18,6 +18,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
+import java.sql.SQLOutput;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -45,8 +46,8 @@ public class BookServiceImpl implements BookService {
             throw new IllegalArgumentException("User ID cannot be null");
         }
         Book book = bookRepository.findById(bid)
-                .orElseThrow(()->
-                        new ResourceNotFoundException("book doesn't exist with given id : "+ bid));
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("book doesn't exist with given id : " + bid));
         return BookMapper.mapToBookDto(book);
     }
 
@@ -93,16 +94,26 @@ public class BookServiceImpl implements BookService {
         return BookMapper.mapToBookDto(book.get());
     }
 
-    BookDto findBookDtoByTitleAndUserEmail(String bookTitle, String email) {
-        Optional<BookDto> exitingBookDto = bookRepository.findBookDtoByTitleAndUserEmail(bookTitle,email);
+    BookDto findBookByTitleAndUserEmail(String bookTitle, String email) {
+        Optional<BookDto> exitingBookDto = bookRepository.findBookDtoByTitleAndUserEmail(bookTitle, email);
         return exitingBookDto.orElse(null);
+    }
+
+    @Override
+    public BookDto getBookForEdit(Long bookId, String email) {
+        UserBook userBook = userBookRepository.findByBookBidAndUserEmail(bookId, email);
+        if (userBook == null) {
+            return null;
+        }
+        Book book = userBook.getBook();
+        return new BookDto(book.getBid(), book.getBookTitle(), book.getBookAuthor());
     }
 
     @Override
     @Transactional
     public BookDto addBookByUser(BookDto bookDto, String email) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found for email : "+email));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found for email : " + email));
 
         Book book = bookRepository.findByBookTitle(bookDto.getBookTitle())
                 .orElse(null);
@@ -135,10 +146,50 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    @Transactional
+    public void updateBookByUser(BookDto bookDto, String userEmail) {
+        User user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found for email : " + userEmail));
+        Book book;
+
+        if (bookDto.getBid() != null) {
+            // Updating existing book
+            book = bookRepository.findById(bookDto.getBid())
+                    .orElseThrow(() -> new RuntimeException("Book not found"));
+            book.setBookTitle(bookDto.getBookTitle());
+            book.setBookAuthor(bookDto.getBookAuthor());
+            System.out.println("updated the book with bid: "+ book.getBid());
+            bookRepository.save(book);  // This will update the existing record
+        } else {
+            // Adding new book
+            book = BookMapper.mapToBook(bookDto);
+            book = bookRepository.save(book);
+
+            UserBook userBook = new UserBook(user, book);
+            userBookRepository.save(userBook);
+        }
+    }
+
+    @Override
+    @Transactional
+    public boolean deleteBookForUser(Long bookId, String email) {
+        UserBook userBook = userBookRepository.findByBookBidAndUserEmail(bookId, email);
+        if (userBook != null) {
+            userBookRepository.delete(userBook);
+            // Only delete the book if no other user owns it
+            if (userBookRepository.countByBookBid(bookId) == 0) {
+                bookRepository.deleteById(bookId);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    @Override
     public List<Book> findBooksByUserEmail(String email) {
-        List<Book> books =  bookRepository.findBooksByUserEmail(email);
+        List<Book> books = bookRepository.findBooksByUserEmail(email);
         System.out.println("Found " + books.size() + " books");
-        return  books;
+        return books;
     }
 
     @Override
@@ -161,22 +212,8 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public List<BookSearchResultDto> searchBooksByTitle(String bookTitle) {
-        return bookRepository.findBooksByTitleWithOwners(bookTitle);
-    }
-
-    @Override
-    @Transactional
-    public boolean deleteBookForUser(Long bookId, String email) {
-        UserBook userBook = userBookRepository.findByBookBidAndUserEmail(bookId, email);
-        if (userBook != null) {
-            userBookRepository.delete(userBook);
-            // Only delete the book if no other user owns it
-            if (userBookRepository.countByBookBid(bookId) == 0) {
-                bookRepository.deleteById(bookId);
-            }
-            return true;
-        }
-        return false;
+        List<BookSearchResultDto> booksByTitleWithOwners = bookRepository.findBooksByTitleWithOwners(bookTitle);
+        return booksByTitleWithOwners;
     }
 
 }

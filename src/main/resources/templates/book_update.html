@@ -46,20 +46,20 @@
     <div class="row col-md-8 offset-md-2">
         <div class="card">
             <div class="card-header">
-                <h2 class="text-center">Search the book</h2>
+                <h2 class="text-center">Update a Book</h2>
                 <div sec:authentication="name"></div>
             </div>
-            <div th:if="${param.success}">
+            <div th:if="${successUpdate}">
                 <div class="alert alert-info ">
-                    You have successfully added the book !
+                    You have successfully updated the book !
                 </div>
             </div>
             <div class="card-body">
                 <form
                         method="post"
                         role="form"
-                        th:action="@{/search}"
-                        th:object="${searchBookDto}"
+                        th:action="@{/user/book/update}"
+                        th:object="${book}"
                 >
                     <div class="form-group mb-3">
                         <label class="form-label">Book Title</label>
@@ -67,16 +67,35 @@
                                 class="form-control"
                                 id="bookTitle"
                                 name="bookTitle"
-                                placeholder="Enter the title of the book you are looking for..."
+                                placeholder="Enter the tilte of your book"
                                 th:field="*{bookTitle}"
                                 type="text"
                         />
                         <p th:errors="*{bookTitle}" class="text-danger"
                            th:if="${#fields.hasErrors('bookTitle')}"></p>
                     </div>
+
+                    <div class="form-group mb-3">
+                        <label class="form-label">Book Author</label>
+                        <input
+                                class="form-control"
+                                id="bookAuthor"
+                                name="bookAuthor"
+                                placeholder="Enter Author name"
+                                th:field="*{bookAuthor}"
+                                type="text"
+                        />
+                        <p th:errors="*{bookAuthor}" class="text-danger"
+                           th:if="${#fields.hasErrors('bookAuthor')}"></p>
+                    </div>
+                    <input type="hidden" th:field="*{bid}" />
+
                     <div class="form-group">
-                        <button class="btn btn-secondary" type="submit">🔍</button>
-                        <span> Nah! <a th:href="@{/user/dashboard}">Cancel</a></span>
+                        <button class="btn btn-primary" type="submit">Update</button>
+                        <span> <a th:href="@{/user/dashboard}">Go to Dashboard</a></span>
+                    </div>
+                    <div th:if="${successUpdate}" class="alert alert-success" role="alert">
+                        <span th:text="${successMessage}"> Cancel</span>
                     </div>
                 </form>
             </div>
