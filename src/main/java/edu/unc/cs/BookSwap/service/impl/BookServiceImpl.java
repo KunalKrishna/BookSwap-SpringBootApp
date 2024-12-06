@@ -132,7 +132,6 @@ public class BookServiceImpl implements BookService {
         // Create new ownership entry
         UserBook userBook = new UserBook(user, book);
         try {
-            // TRIGGER
             userBookRepository.save(userBook);
         } catch (DataIntegrityViolationException e) {
             if (e.getCause() instanceof SQLException &&
