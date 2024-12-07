@@ -94,7 +94,7 @@
                             />
                         </div>
                         <div class="form-group mb-3">
-                            <button type="submit" class="btn btn-primary" >Login</button>
+                            <button type="submit" class="btn btn-primary">Login</button>
                             <span> New User ?
                                 <a th:href="@{/register}">Register/Signup here</a>
                             </span>
@@ -106,5 +106,33 @@
     </div>
 </div>
 
+<!--FOOTER-->
+<br/><br/><br/><br/>
+<footer class="footer mt-auto py-3 bg-light">
+    <div class="container text-center">
+        <div class="row">
+            <div class="col-md-4">
+                <a href="https://github.com/KunalKrishna/BookSwap-SpringBootApp" target="_blank" class="text-dark">
+                    <i class="bi bi-github"></i> GitHub Repository
+                </a>
+            </div>
+            <div class="col-md-4">
+                <a href="mailto:kk85@cs.unc.edu" class="text-dark">
+                    <i class="bi bi-envelope"></i> Contact Me
+                </a>
+            </div>
+            <div class="col-md-4">
+                <a th:href="@{/pdfs/kunal_cv_Nov2024.pdf}" download class="text-dark">
+                    <i class="bi bi-file-earmark-pdf"></i> Download Resume
+                </a>
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-12">
+                <small>&copy; 2024 Book Swap Application. All rights reserved.</small>
+            </div>
+        </div>
+    </div>
+</footer>
 </body>
 </html>
